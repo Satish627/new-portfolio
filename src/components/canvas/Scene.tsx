@@ -20,13 +20,20 @@ export default function Scene() {
       camera={{ position: [0, 0, 14], fov: 40 }}
       gl={{
         antialias: false,
-        alpha: false,
+        alpha: true,
         powerPreference: "high-performance",
       }}
       onCreated={({ gl }) => {
-        gl.setClearColor("#050a12");
+        gl.setClearColor(0x000000, 0);
       }}
     >
+      <hemisphereLight args={["#ffffff", "#4c1d95", 1.1]} />
+      <directionalLight position={[4, 6, 8]} intensity={1.6} />
+      <directionalLight
+        position={[-5, 2, -3]}
+        intensity={0.5}
+        color="#a78bfa"
+      />
       <PerformanceMonitor
         onIncline={() => {
           setDpr(Math.min(2, window.devicePixelRatio));

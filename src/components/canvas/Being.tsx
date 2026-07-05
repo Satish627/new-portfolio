@@ -9,52 +9,6 @@ import { useStore, type SectionId } from "@/store/useStore";
 
 const MODEL_URL = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/models/being.glb`;
 
-const vertexShader = /* glsl */ `
-  #include <common>
-  #include <skinning_pars_vertex>
-
-  varying vec3 vNormal;
-  varying vec3 vViewDir;
-  varying vec3 vWorldPos;
-
-  void main() {
-    #include <beginnormal_vertex>
-    #include <skinbase_vertex>
-    #include <skinnormal_vertex>
-    #include <begin_vertex>
-    #include <skinning_vertex>
-
-    vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0);
-    gl_Position = projectionMatrix * mvPosition;
-
-    vNormal = normalize(normalMatrix * objectNormal);
-    vViewDir = normalize(-mvPosition.xyz);
-    vWorldPos = (modelMatrix * vec4(transformed, 1.0)).xyz;
-  }
-`;
-
-const fragmentShader = /* glsl */ `
-  uniform vec3 uColor;
-  uniform float uTime;
-  uniform float uOpacity;
-  uniform float uFadeLo;
-  uniform float uFadeHi;
-
-  varying vec3 vNormal;
-  varying vec3 vViewDir;
-  varying vec3 vWorldPos;
-
-  void main() {
-    float fresnel = pow(1.0 - abs(dot(normalize(vNormal), normalize(vViewDir))), 2.0);
-    float scan = 0.5 + 0.5 * sin(vWorldPos.y * 60.0 - uTime * 1.5);
-    float ground = smoothstep(uFadeLo, uFadeHi, vWorldPos.y);
-    float alpha = (fresnel * 0.85 + 0.05) * (0.65 + 0.35 * scan) * ground * uOpacity;
-    if (alpha < 0.004) discard;
-    vec3 color = uColor * (0.35 + fresnel * 1.5);
-    gl_FragColor = vec4(color, alpha);
-  }
-`;
-
 interface ActPose {
   pos: [number, number, number];
   ry: number;
@@ -66,7 +20,7 @@ interface ActPose {
 }
 
 const ACTS: Record<SectionId, ActPose> = {
-  hero: {
+  home: {
     pos: [2.6, -1.9, 4],
     ry: -0.3,
     height: 2.9,
@@ -75,31 +29,31 @@ const ACTS: Record<SectionId, ActPose> = {
     dim: 1,
     book: false,
   },
-  work: {
-    pos: [3.0, -1.75, 1.8],
-    ry: 2.7,
-    height: 1.9,
-    clip: "Sitting",
-    track: false,
-    dim: 0.85,
-    book: false,
-  },
   about: {
     pos: [-3.2, -1.9, 2.5],
     ry: 0.55,
     height: 2.4,
     clip: "Idle",
     track: false,
-    dim: 0.5,
+    dim: 0.6,
     book: false,
   },
-  experience: {
+  projects: {
+    pos: [3.0, -1.75, 1.8],
+    ry: 2.7,
+    height: 1.9,
+    clip: "Sitting",
+    track: false,
+    dim: 0.9,
+    book: false,
+  },
+  education: {
     pos: [3.1, -1.7, 0.6],
     ry: -0.35,
     height: 2.1,
     clip: "Sitting",
     track: false,
-    dim: 0.9,
+    dim: 1,
     book: true,
   },
   contact: {
@@ -126,33 +80,16 @@ export default function Being() {
   const pointer = useRef({ x: 0, y: 0 });
   const look = useRef({ yaw: 0, pitch: 0 });
   const headBone = useRef<THREE.Object3D | null>(null);
-  const active = useRef<SectionId>("hero");
   const applied = useRef<SectionId | null>(null);
   const currentClip = useRef<string | null>(null);
-
-  const material = useMemo(
-    () =>
-      new THREE.ShaderMaterial({
-        vertexShader,
-        fragmentShader,
-        uniforms: {
-          uColor: { value: new THREE.Color("#67e8f9") },
-          uTime: { value: 0 },
-          uOpacity: { value: 0 },
-          uFadeLo: { value: -1.9 },
-          uFadeHi: { value: -0.9 },
-        },
-        transparent: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-      }),
-    []
-  );
+  const opacity = useRef(0);
+  const materials = useRef<THREE.Material[]>([]);
+  const modelHeight = useRef(1);
 
   const bookMaterial = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
-        color: new THREE.Color("#67e8f9"),
+        color: new THREE.Color("#a78bfa"),
         transparent: true,
         opacity: 0,
         side: THREE.DoubleSide,
@@ -161,27 +98,30 @@ export default function Being() {
     []
   );
 
-  const modelHeight = useRef(1);
-
   useLayoutEffect(() => {
+    const mats: THREE.Material[] = [];
     scene.traverse((obj) => {
       if ((obj as THREE.Mesh).isMesh) {
-        (obj as THREE.Mesh).material = material;
-        obj.frustumCulled = false;
+        const mesh = obj as THREE.Mesh;
+        mesh.frustumCulled = false;
+        const list = Array.isArray(mesh.material)
+          ? mesh.material
+          : [mesh.material];
+        list.forEach((m) => {
+          m.transparent = true;
+          m.opacity = 0;
+          mats.push(m);
+        });
       }
       if (/^head/i.test(obj.name) && !headBone.current) {
         headBone.current = obj;
       }
     });
+    materials.current = mats;
     scene.updateMatrixWorld(true);
     const bbox = new THREE.Box3().setFromObject(scene);
     modelHeight.current = Math.max(0.001, bbox.max.y - bbox.min.y);
-    (window as unknown as { __beingDebug?: object }).__beingDebug = {
-      min: bbox.min.toArray(),
-      max: bbox.max.toArray(),
-      height: modelHeight.current,
-    };
-  }, [scene, material]);
+  }, [scene]);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -200,8 +140,8 @@ export default function Being() {
     if (!g) return;
     const halfW = lastHalfW.current;
     const narrow = halfW < 2.6;
-    const height = narrow ? act.height * 0.8 : act.height;
-    const margin = height * 0.36;
+    const height = narrow ? act.height * 0.68 : act.height;
+    const margin = height * 0.42;
     const x =
       act.pos[0] >= 0
         ? Math.max(0.4, Math.min(act.pos[0], halfW - margin))
@@ -210,8 +150,6 @@ export default function Being() {
     g.position.set(x, act.pos[1], act.pos[2]);
     g.rotation.set(0, act.ry, 0);
     g.scale.setScalar(scale);
-    material.uniforms.uFadeLo.value = act.pos[1];
-    material.uniforms.uFadeHi.value = act.pos[1] + 0.35 * height;
 
     const next = actions[act.clip] ?? actions["Idle"];
     if (next && act.clip !== currentClip.current) {
@@ -231,17 +169,15 @@ export default function Being() {
   };
 
   useEffect(() => {
-    applyAct("hero");
+    applyAct("home");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actions]);
 
   const anchor = useMemo(() => new THREE.Vector3(), []);
 
   useFrame(({ viewport, camera }, delta) => {
-    material.uniforms.uTime.value += delta;
-
     const focus = useStore.getState().focus;
-    let best: SectionId = "hero";
+    let best: SectionId = "home";
     let bestVal = 0;
     (Object.keys(focus) as SectionId[]).forEach((id) => {
       if (focus[id] > bestVal) {
@@ -249,9 +185,7 @@ export default function Being() {
         best = id;
       }
     });
-    active.current = best;
 
-    const o = material.uniforms.uOpacity;
     const act = ACTS[best];
     anchor.set(0, 0, act.pos[2]);
     const halfW = viewport.getCurrentViewport(camera, anchor).width / 2;
@@ -260,14 +194,19 @@ export default function Being() {
     if (resized && applied.current) applyAct(applied.current);
     const needsMove = applied.current !== best;
 
-    // While a move is pending, drive opacity to 0, then teleport & fade in.
-    const targetOpacity = needsMove ? 0 : bestVal * act.dim * 0.9;
-    o.value += (targetOpacity - o.value) * Math.min(1, delta * 5);
-    if (needsMove && o.value < 0.04) applyAct(best);
-    bookMaterial.opacity = o.value * 0.7;
+    const targetOpacity = needsMove ? 0 : bestVal * act.dim;
+    opacity.current +=
+      (targetOpacity - opacity.current) * Math.min(1, delta * 5);
+    if (needsMove && opacity.current < 0.04) applyAct(best);
+
+    materials.current.forEach((m) => {
+      m.opacity = opacity.current;
+    });
+    bookMaterial.opacity = opacity.current * 0.7;
+    if (group.current) group.current.visible = opacity.current > 0.01;
 
     if (reduced) return;
-    if (ACTS[applied.current ?? "hero"].track && headBone.current) {
+    if (ACTS[applied.current ?? "home"].track && headBone.current) {
       look.current.yaw +=
         (pointer.current.x * 0.55 - look.current.yaw) * 0.04;
       look.current.pitch +=

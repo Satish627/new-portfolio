@@ -105,7 +105,7 @@ export default function ParticleLattice() {
       uPortraitOffset: { value: new THREE.Vector3(2, 0.2, 5) },
       uPScale: { value: 1 },
       uPDim: { value: 1 },
-      uColor: { value: new THREE.Color("#67e8f9") },
+      uColor: { value: new THREE.Color("#c4b5fd") },
     }),
     []
   );

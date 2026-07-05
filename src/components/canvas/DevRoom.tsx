@@ -44,7 +44,7 @@ const screenFragment = /* glsl */ `
     float scan = 0.92 + 0.08 * sin(vUv.y * 260.0 + uTime * 3.0);
     float glow = 0.06;
     float v = (line * 0.75 + cursor + glow) * scan;
-    vec3 color = vec3(0.28, 0.80, 0.94) * v;
+    vec3 color = vec3(0.72, 0.55, 0.98) * v;
     gl_FragColor = vec4(color, uOpacity * (0.25 + v));
   }
 `;
@@ -73,7 +73,7 @@ export default function DevRoom() {
   const edgeMaterial = useMemo(
     () =>
       new THREE.LineBasicMaterial({
-        color: new THREE.Color("#67e8f9"),
+        color: new THREE.Color("#a78bfa"),
         transparent: true,
         opacity: 0.55,
       }),
@@ -83,7 +83,7 @@ export default function DevRoom() {
   const faceMaterial = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
-        color: new THREE.Color("#0c1d2e"),
+        color: new THREE.Color("#191036"),
         transparent: true,
         opacity: 0.35,
         depthWrite: false,
@@ -115,7 +115,7 @@ export default function DevRoom() {
   }, []);
 
   useFrame(({ clock }) => {
-    const focus = useStore.getState().focus.work;
+    const focus = useStore.getState().focus.projects;
     if (!reduced) screenUniforms.uTime.value = clock.elapsedTime;
     screenUniforms.uOpacity.value = focus;
     edgeMaterial.opacity = 0.5 * focus;

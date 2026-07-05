@@ -4,10 +4,10 @@ import { useEffect } from "react";
 import { useStore, type SectionId } from "@/store/useStore";
 
 const SECTIONS: SectionId[] = [
-  "hero",
-  "work",
+  "home",
   "about",
-  "experience",
+  "projects",
+  "education",
   "contact",
 ];
 

@@ -1,112 +1,181 @@
-import { projects, skills, experience } from "@/content/projects";
+import Image from "next/image";
+import {
+  home,
+  about,
+  projects,
+  education,
+  contact,
+} from "@/content/site";
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export default function Home() {
   return (
     <>
-      <section id="hero" className="section hero">
-        <p className="kicker">Act I · Arrival — Software developer · Copenhagen</p>
+      <section id="home" className="section hero">
+        <p className="kicker">{home.badge}</p>
         <h1 className="display">
-          Building living
-          <br />
-          <em>interfaces</em> from code.
+          Software Developer building{" "}
+          <em className="grad-text">modern web applications</em>.
         </h1>
-        <p className="lede">
-          I&apos;m Satish Gurung — a full-stack developer and MSc Computer
-          Science student at DTU, crafting immersive, performant experiences
-          for the web.
-        </p>
+        <p className="tagline">{home.tagline}</p>
+        {home.paragraphs.map((p) => (
+          <p key={p} className="lede">
+            {p}
+          </p>
+        ))}
+        <div className="tags">
+          {home.techStack.map((tech) => (
+            <span key={tech}>{tech}</span>
+          ))}
+        </div>
+        <div className="cta-row">
+          {home.ctas.map((cta) => (
+            <a
+              key={cta.label}
+              href={cta.href}
+              className={cta.variant === "solid" ? "btn btn-solid" : "btn"}
+            >
+              {cta.label}
+            </a>
+          ))}
+        </div>
         <div className="scroll-cue">Scroll</div>
       </section>
 
-      <section id="work" className="section">
-        <p className="kicker">Act II · The work</p>
-        <h2 className="display">Selected work</h2>
+      <section id="about" className="section">
+        <p className="kicker">{about.kicker}</p>
+        <h2 className="display">About me</h2>
+        <p className="lede">{about.description}</p>
+        <ul className="details">
+          {about.details.map((d) => (
+            <li key={d}>{d}</li>
+          ))}
+        </ul>
+        <div className="story-grid">
+          {about.storySteps.map((step) => (
+            <div key={step.phase} className="story-step">
+              <p className="story-phase">{step.phase}</p>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="projects" className="section">
+        <p className="kicker">{projects.kicker}</p>
+        <h2 className="display">Projects</h2>
+        <p className="lede">{projects.description}</p>
         <div className="project-grid">
-          {projects.map((project) => (
-            <article key={project.slug} className="project-card">
+          {projects.featured.map((project) => (
+            <article key={project.title} className="project-card">
+              <p className="project-category">{project.category}</p>
               <h3>{project.title}</h3>
-              <p>{project.oneLiner}</p>
+              <p>{project.summary}</p>
+              <p className="project-highlight">{project.highlight}</p>
               <div className="project-stack">
                 {project.stack.map((tech) => (
                   <span key={tech}>{tech}</span>
                 ))}
               </div>
-              {project.link && (
-                <a
-                  className="project-link"
-                  href={project.link}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {project.linkLabel ?? "View"} ↗
-                </a>
+              {project.links.length > 0 && (
+                <div className="project-links">
+                  {project.links.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {link.label} ↗
+                    </a>
+                  ))}
+                </div>
               )}
             </article>
           ))}
         </div>
       </section>
 
-      <section id="about" className="section">
-        <p className="kicker">Act III · The making</p>
-        <h2 className="display">
-          Code is a <em>craft</em>.
-        </h2>
-        <p className="lede">
-          I&apos;m a Copenhagen-based developer — MSc Computer Science at DTU,
-          BEng Software Technology from VIA — who cares about the space where
-          engineering meets design: clean architecture underneath, interfaces
-          that feel alive on top.
-        </p>
-        <div className="tags">
-          {skills.map((skill) => (
-            <span key={skill}>{skill}</span>
-          ))}
-        </div>
-      </section>
-
-      <section id="experience" className="section">
-        <p className="kicker">Act IV · Reaching</p>
-        <h2 className="display">Experience</h2>
-        <div className="timeline">
-          {experience.map((item) => (
-            <div key={item.title} className="timeline-item">
-              <p className="when">
-                {item.when} · {item.where}
-              </p>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </div>
+      <section id="education" className="section">
+        <p className="kicker">{education.kicker}</p>
+        <h2 className="display">Education</h2>
+        <p className="lede">{education.description}</p>
+        <div className="milestones">
+          {education.milestones.map((m) => (
+            <article key={m.institution} className="milestone">
+              <div className="milestone-head">
+                <Image
+                  src={`${base}${m.logo}`}
+                  alt={`${m.institution} logo`}
+                  width={44}
+                  height={44}
+                  className="milestone-logo"
+                  unoptimized
+                />
+                <div>
+                  <h3>{m.institution}</h3>
+                  <p className="milestone-meta">
+                    {m.period} · {m.location}
+                  </p>
+                </div>
+                <span className="milestone-status">{m.status}</span>
+              </div>
+              <p className="milestone-program">{m.program}</p>
+              <p className="milestone-summary">{m.summary}</p>
+              <div className="project-stack">
+                {m.focus.map((f) => (
+                  <span key={f}>{f}</span>
+                ))}
+              </div>
+              <div className="project-links">
+                <a href={m.website} target="_blank" rel="noreferrer">
+                  Website ↗
+                </a>
+              </div>
+            </article>
           ))}
         </div>
       </section>
 
       <section id="contact" className="section">
-        <p className="kicker">Act V · Hello</p>
+        <p className="kicker">{contact.kicker}</p>
         <h2 className="display">
-          Let&apos;s build something <em>alive</em>.
+          Let&apos;s build <em className="grad-text">something</em>.
         </h2>
-        <a className="contact-link" href="mailto:satish.grg627@gmail.com">
-          satish.grg627@gmail.com
-        </a>
-        <div className="socials">
+        <p className="lede">{contact.description}</p>
+        <ul className="details">
+          {contact.details.map((d) => (
+            <li key={d}>{d}</li>
+          ))}
+        </ul>
+        <div className="tags">
+          {contact.availability.map((a) => (
+            <span key={a}>{a}</span>
+          ))}
+        </div>
+        <div className="contact-grid">
+          {contact.contactInfo.map((info) => (
+            <a
+              key={info.label}
+              href={info.href}
+              className="contact-item"
+              target={info.href.startsWith("http") ? "_blank" : undefined}
+              rel={info.href.startsWith("http") ? "noreferrer" : undefined}
+            >
+              <span className="contact-label">{info.label}</span>
+              <span className="contact-value">{info.value}</span>
+            </a>
+          ))}
+        </div>
+        <div className="cta-row">
           <a
-            href="https://github.com/Satish627"
+            className="btn btn-solid"
+            href={`${base}${contact.cv.href}`}
             target="_blank"
-            rel="noreferrer"
           >
-            GitHub
-          </a>
-          <a
-            href="https://linkedin.com/in/satish-gurung-3a2781223"
-            target="_blank"
-            rel="noreferrer"
-          >
-            LinkedIn
-          </a>
-          <a href={`${base}/Satish_Gurung_CV.pdf`} target="_blank">
-            CV
+            {contact.cv.label}
           </a>
         </div>
       </section>

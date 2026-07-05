@@ -3,10 +3,10 @@ import { create } from "zustand";
 export type QualityTier = "high" | "low";
 
 export type SectionId =
-  | "hero"
-  | "work"
+  | "home"
   | "about"
-  | "experience"
+  | "projects"
+  | "education"
   | "contact";
 
 export type FocusMap = Record<SectionId, number>;
@@ -22,7 +22,7 @@ interface PortfolioStore {
 export const useStore = create<PortfolioStore>((set) => ({
   act: 0,
   progress: 0,
-  focus: { hero: 1, work: 0, about: 0, experience: 0, contact: 0 },
+  focus: { home: 1, about: 0, projects: 0, education: 0, contact: 0 },
   quality: "high",
   setQuality: (quality) => set({ quality }),
 }));

@@ -19,7 +19,7 @@ export default function FloatingObjects() {
   const material = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
-        color: new THREE.Color("#67e8f9"),
+        color: new THREE.Color("#a78bfa"),
         wireframe: true,
         transparent: true,
         opacity: 0.22,
