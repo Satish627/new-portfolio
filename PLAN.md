@@ -1,5 +1,13 @@
 # Portfolio — "The Being" · Project Plan
 
+> **Direction update (2026-07-05):** after a reference video, the hero now
+> features a holographic dev room (desk, animated code screen, keyboard, mug —
+> emerald edge-render, built procedurally) plus wireframe floating objects
+> across all sections. The being moved from the hero to Act V, materializing
+> at the contact section. The Act III particle portrait is built from a real
+> photo (`assets-src/`, sampled by `scripts/generate-portrait.ts`). One focal
+> element per act: room → cards → portrait → timeline → being.
+
 A 3D animated portfolio for Satish, built as a single continuous performance:
 one entity made of ~20,000 emerald particles that assembles, works, reaches,
 and greets — narrating the portfolio across five acts as the visitor scrolls.

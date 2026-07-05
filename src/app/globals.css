@@ -1,11 +1,11 @@
 :root {
-  --bg: #050d0a;
-  --surface: #0a1612;
-  --emerald: #10b981;
-  --accent: #34d399;
-  --mist: #e8f5f0;
-  --muted: #5c7a6e;
-  --line: rgba(52, 211, 153, 0.12);
+  --bg: #050a12;
+  --surface: #0a1420;
+  --primary: #22d3ee;
+  --accent: #67e8f9;
+  --mist: #eaf4f8;
+  --muted: #5f7d8c;
+  --line: rgba(103, 232, 249, 0.12);
 }
 
 * {
@@ -28,7 +28,7 @@ body {
 }
 
 ::selection {
-  background: var(--emerald);
+  background: var(--primary);
   color: var(--bg);
 }
 
@@ -169,7 +169,7 @@ main {
 }
 
 .project-card:hover {
-  border-color: rgba(52, 211, 153, 0.45);
+  border-color: rgba(103, 232, 249, 0.45);
   transform: translateY(-3px);
 }
 

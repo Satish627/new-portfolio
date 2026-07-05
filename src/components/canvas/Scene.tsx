@@ -6,6 +6,8 @@ import { PerformanceMonitor } from "@react-three/drei";
 import ParticleLattice from "./ParticleLattice";
 import CameraRig from "./CameraRig";
 import Being from "./Being";
+import DevRoom from "./DevRoom";
+import FloatingObjects from "./FloatingObjects";
 import { useStore } from "@/store/useStore";
 
 export default function Scene() {
@@ -22,7 +24,7 @@ export default function Scene() {
         powerPreference: "high-performance",
       }}
       onCreated={({ gl }) => {
-        gl.setClearColor("#050d0a");
+        gl.setClearColor("#050a12");
       }}
     >
       <PerformanceMonitor
@@ -37,6 +39,8 @@ export default function Scene() {
       >
         <CameraRig />
         <ParticleLattice />
+        <DevRoom />
+        <FloatingObjects />
         <Suspense fallback={null}>
           <Being />
         </Suspense>
