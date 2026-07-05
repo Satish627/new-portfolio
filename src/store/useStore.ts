@@ -4,14 +4,14 @@ export type QualityTier = "high" | "low";
 
 interface PortfolioStore {
   act: number;
-  setAct: (act: number) => void;
+  progress: number;
   quality: QualityTier;
   setQuality: (quality: QualityTier) => void;
 }
 
 export const useStore = create<PortfolioStore>((set) => ({
   act: 0,
-  setAct: (act) => set({ act }),
+  progress: 0,
   quality: "high",
   setQuality: (quality) => set({ quality }),
 }));

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import * as THREE from "three";
@@ -87,7 +87,7 @@ export default function Being() {
     []
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     scene.traverse((obj) => {
       if ((obj as THREE.SkinnedMesh).isSkinnedMesh) {
         if (/joints/i.test(obj.name)) {

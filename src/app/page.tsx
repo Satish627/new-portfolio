@@ -1,18 +1,21 @@
-import { projects } from "@/content/projects";
+import { projects, skills, experience } from "@/content/projects";
+
+const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export default function Home() {
   return (
     <>
       <section id="hero" className="section hero">
-        <p className="kicker">Act I · Arrival — Software engineer</p>
+        <p className="kicker">Act I · Arrival — Software developer · Copenhagen</p>
         <h1 className="display">
           Building living
           <br />
           <em>interfaces</em> from code.
         </h1>
         <p className="lede">
-          I&apos;m Satish — a full-stack developer crafting immersive,
-          performant experiences for the web.
+          I&apos;m Satish Gurung — a full-stack developer and MSc Computer
+          Science student at DTU, crafting immersive, performant experiences
+          for the web.
         </p>
         <div className="scroll-cue">Scroll</div>
       </section>
@@ -30,6 +33,16 @@ export default function Home() {
                   <span key={tech}>{tech}</span>
                 ))}
               </div>
+              {project.link && (
+                <a
+                  className="project-link"
+                  href={project.link}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {project.linkLabel ?? "View"} ↗
+                </a>
+              )}
             </article>
           ))}
         </div>
@@ -41,29 +54,31 @@ export default function Home() {
           Code is a <em>craft</em>.
         </h2>
         <p className="lede">
-          I care about the space where engineering meets design — interfaces
-          that feel alive without getting in the way. This bio is a
-          placeholder; the real story lands here soon.
+          I&apos;m a Copenhagen-based developer — MSc Computer Science at DTU,
+          BEng Software Technology from VIA — who cares about the space where
+          engineering meets design: clean architecture underneath, interfaces
+          that feel alive on top.
         </p>
+        <div className="tags">
+          {skills.map((skill) => (
+            <span key={skill}>{skill}</span>
+          ))}
+        </div>
       </section>
 
       <section id="experience" className="section">
         <p className="kicker">Act IV · Reaching</p>
         <h2 className="display">Experience</h2>
         <div className="timeline">
-          <div className="timeline-item">
-            <p className="when">Placeholder · 20XX — now</p>
-            <h3>Role goes here</h3>
-            <p>
-              A sentence about what was built, shipped, or learned. Replace
-              with real experience entries.
-            </p>
-          </div>
-          <div className="timeline-item">
-            <p className="when">Placeholder · 20XX — 20XX</p>
-            <h3>Earlier role goes here</h3>
-            <p>Another placeholder entry for the timeline.</p>
-          </div>
+          {experience.map((item) => (
+            <div key={item.title} className="timeline-item">
+              <p className="when">
+                {item.when} · {item.where}
+              </p>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -76,20 +91,29 @@ export default function Home() {
           satish.grg627@gmail.com
         </a>
         <div className="socials">
-          <a href="https://github.com/" target="_blank" rel="noreferrer">
+          <a
+            href="https://github.com/Satish627"
+            target="_blank"
+            rel="noreferrer"
+          >
             GitHub
           </a>
-          <a href="https://linkedin.com/" target="_blank" rel="noreferrer">
+          <a
+            href="https://linkedin.com/in/satish-gurung-3a2781223"
+            target="_blank"
+            rel="noreferrer"
+          >
             LinkedIn
           </a>
-          <a href="https://x.com/" target="_blank" rel="noreferrer">
-            X
+          <a href={`${base}/Satish_Gurung_CV.pdf`} target="_blank">
+            CV
           </a>
         </div>
       </section>
 
       <footer className="footer">
-        © {new Date().getFullYear()} Satish · Built with Next.js + Three.js
+        © {new Date().getFullYear()} Satish Gurung · Built with Next.js +
+        Three.js
       </footer>
     </>
   );

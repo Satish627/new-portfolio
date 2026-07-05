@@ -3,6 +3,7 @@ import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import CanvasRoot from "@/components/canvas/CanvasRoot";
 import SmoothScroll from "@/components/dom/SmoothScroll";
+import ScrollProgress from "@/components/dom/ScrollProgress";
 import Nav from "@/components/dom/Nav";
 
 const fraunces = Fraunces({
@@ -23,9 +24,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Satish — Software Engineer",
+  title: "Satish Gurung — Software Developer",
   description:
-    "Building living interfaces from code. Portfolio of Satish, a full-stack developer crafting immersive web experiences.",
+    "Building living interfaces from code. Portfolio of Satish Gurung, a Copenhagen-based full-stack developer crafting immersive web experiences.",
 };
 
 export default function RootLayout({
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body>
         <CanvasRoot />
         <SmoothScroll />
+        <ScrollProgress />
         <Nav />
         <main>{children}</main>
       </body>

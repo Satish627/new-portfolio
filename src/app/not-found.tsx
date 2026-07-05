@@ -1,3 +1,5 @@
+const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 export default function NotFound() {
   return (
     <section className="section">
@@ -8,7 +10,7 @@ export default function NotFound() {
       <p className="lede">
         The being searched everywhere and couldn&apos;t find this page.
       </p>
-      <a className="contact-link" href="/">
+      <a className="contact-link" href={`${base}/`}>
         Return home
       </a>
     </section>
